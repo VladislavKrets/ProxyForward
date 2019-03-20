@@ -31,9 +31,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (!portEditText.getText().toString().matches("\\d+")) return;
                 new ServerTask().execute();
-                //Intent intent = new Intent(MainActivity.this, ServerSocket.class);
-                //intent.putExtra("port", Integer.parseInt(portEditText.getText().toString()));
-               // startService(intent);
                 startButton.setEnabled(false);
                 stopButton.setEnabled(true);
             }
@@ -41,7 +38,6 @@ public class MainActivity extends AppCompatActivity {
         stopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //stopService(new Intent(MainActivity.this, ServerService.class));
                 FlagSingleton.getInstance().setFlag(false);
                 stopButton.setEnabled(false);
                 startButton.setEnabled(true);
