@@ -1,5 +1,7 @@
 package com.example.proxyforward;
 
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
@@ -26,11 +28,18 @@ public class MainActivity extends AppCompatActivity {
         startButton = findViewById(R.id.startButton);
         stopButton = findViewById(R.id.stopButton);
         FlagSingleton.getInstance();
+        if (isMyServiceRunning(ProxyService.class)) {
+            startButton.setEnabled(false);
+            stopButton.setEnabled(true);
+        }
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!portEditText.getText().toString().matches("\\d+")) return;
-                new ServerTask().execute();
+                Intent intent = new Intent(MainActivity.this, ProxyService.class);
+                intent.putExtra("port", Integer.parseInt(portEditText.getText().toString()));
+                startService(intent);
+                //new ServerTask().execute();
                 startButton.setEnabled(false);
                 stopButton.setEnabled(true);
             }
@@ -38,7 +47,8 @@ public class MainActivity extends AppCompatActivity {
         stopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FlagSingleton.getInstance().setFlag(false);
+                stopService(new Intent(MainActivity.this, ProxyService.class));
+                //FlagSingleton.getInstance().setFlag(false);
                 stopButton.setEnabled(false);
                 startButton.setEnabled(true);
             }
@@ -46,7 +56,9 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private class ServerTask extends AsyncTask<Void, Void, Void>{
+
+
+    class ServerTask extends AsyncTask<Void, Void, Void>{
         private int port = 4333;
 
         @Override
@@ -70,6 +82,14 @@ public class MainActivity extends AppCompatActivity {
             return null;
         }
     }
-
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 }
