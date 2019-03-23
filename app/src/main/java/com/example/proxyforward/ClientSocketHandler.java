@@ -24,6 +24,7 @@ public class ClientSocketHandler extends Thread {
     public void run() {
         try {
             String request = readLine(clientSocket);
+            System.out.println(request);
             if (request.startsWith("CONNECT ")) HttpsHandler(request);
             else HttpHandler(request);
         } catch (IOException e) {
@@ -47,10 +48,11 @@ public class ClientSocketHandler extends Thread {
             }
             catch (ArrayIndexOutOfBoundsException e) {
                 e.printStackTrace();
+                clientSocket.close();
                 return;
             }
             System.out.println(url);
-            if (!url.matches("http://.+\\.\\w+(/.+)*/?")){
+            if (!url.matches("(http://)?.+\\.\\w+(/.+)*/?")){
                 clientInputStream.close();
                 clientOutputStream.close();
                 clientSocket.close();
@@ -60,7 +62,7 @@ public class ClientSocketHandler extends Thread {
                     "ISO-8859-1");
 
             final Socket forwardSocket;
-            String host = url.split("/")[2];
+            String host = url.matches("http://.+\\.\\w+(/.+)*/?") ? url.split("/")[2] : url.split("/")[0];
             try {
                 forwardSocket = new Socket(host, 80);
                 System.out.println(forwardSocket);

@@ -9,7 +9,6 @@
     tools:context=".MainActivity">
 
     <TextView
-        android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
@@ -41,5 +40,25 @@
         android:layout_height="wrap_content"
         android:enabled="false"
         android:text="Stop server" />
+
+    <Button
+        android:id="@+id/WiFiTetherButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="WiFi tethering" />
+
+    <TextView
+        android:id="@+id/proxyStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:textSize="12pt" />
+    <TextView
+        android:id="@+id/proxyURL"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:textSize="12pt" />
+
 
 </LinearLayout>
