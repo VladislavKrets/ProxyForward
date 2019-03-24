@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">ProxyForward</string>
+    <string name="turn_on_tethering">Please turn on wifi tethering</string>
+    <string name="connect_wifi">or connect to WiFi</string>
+    <string name="proxy_is_running">Proxy is running on host:</string>
+    <string name="proxy_stopped">Proxy was stopped</string>
+    <string name="enter_proxy_port">Enter proxy port:</string>
+    <string name="start_server">Start server</string>
+    <string name="stop_server">Stop server</string>
+    <string name="wifi_tethering">WiFi tethering</string>
 </resources>

@@ -47,11 +47,17 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (!portEditText.getText().toString().matches("\\d+")) return;
                 int port = Integer.parseInt(portEditText.getText().toString());
+                String ip = getIPAddress(true);
+                if (ip.trim().startsWith("10.")) {
+                    proxyStatusTextView.setText(getString(R.string.turn_on_tethering));
+                    proxyURLTextView.setText(getString(R.string.connect_wifi));
+                    return;
+                }
                 Intent intent = new Intent(MainActivity.this, ProxyService.class);
                 intent.putExtra("port", port);
                 startService(intent);
-                proxyStatusTextView.setText("Proxy is running on host:");
-                proxyURLTextView.setText(getIPAddress(true) + ":" + port);
+                proxyStatusTextView.setText(getString(R.string.proxy_is_running));
+                proxyURLTextView.setText(String.format("%s:%d", getIPAddress(true), port));
                 startButton.setEnabled(false);
                 stopButton.setEnabled(true);
             }
@@ -60,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 stopService(new Intent(MainActivity.this, ProxyService.class));
-                proxyStatusTextView.setText("Proxy was stopped");
+                proxyStatusTextView.setText(getString(R.string.proxy_stopped));
                 proxyURLTextView.setText("");
                 stopButton.setEnabled(false);
                 startButton.setEnabled(true);
