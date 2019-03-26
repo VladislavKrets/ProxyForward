@@ -23,6 +23,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
     private EditText portEditText;
@@ -45,12 +46,28 @@ public class MainActivity extends AppCompatActivity {
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!portEditText.getText().toString().matches("\\d+")) return;
+                if (!portEditText.getText().toString().matches("\\d+")){
+                    proxyStatusTextView.setText(getString(R.string.enter_the_port));
+                    proxyURLTextView.setText("");
+                    return;
+                }
                 int port = Integer.parseInt(portEditText.getText().toString());
                 String ip = getIPAddress(true);
                 if (ip.trim().startsWith("10.")) {
                     proxyStatusTextView.setText(getString(R.string.turn_on_tethering));
                     proxyURLTextView.setText(getString(R.string.connect_wifi));
+                    return;
+                }
+                try {
+                    if (!(new CheckingPortTask().execute(port).get())) {
+                        proxyStatusTextView.setText(getString(R.string.busy_port));
+                        proxyURLTextView.setText(getString(R.string.enter_another_port));
+                        return;
+                    }
+                } catch (ExecutionException | InterruptedException e) {
+                    e.printStackTrace();
+                    proxyStatusTextView.setText(getString(R.string.errors));
+                    proxyURLTextView.setText("");
                     return;
                 }
                 Intent intent = new Intent(MainActivity.this, ProxyService.class);
@@ -103,7 +120,6 @@ public class MainActivity extends AppCompatActivity {
                 for (InetAddress addr : addrs) {
                     if (!addr.isLoopbackAddress()) {
                         String sAddr = addr.getHostAddress();
-                        //boolean isIPv4 = InetAddressUtils.isIPv4Address(sAddr);
                         isIPv4 = sAddr.indexOf(':')<0;
 
                         if (useIPv4) {
@@ -139,6 +155,21 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return false;
+    }
+
+    private class CheckingPortTask extends AsyncTask<Integer, Void, Boolean> {
+
+        @Override
+        protected Boolean doInBackground(Integer...port) {
+            try {
+                ServerSocket serverSocket = new ServerSocket(port[0]);
+                serverSocket.close();
+                return true;
+            }
+            catch (Exception e) {
+                return false;
+            }
+        }
     }
 
 }

@@ -8,4 +8,8 @@
     <string name="start_server">Start server</string>
     <string name="stop_server">Stop server</string>
     <string name="wifi_tethering">WiFi tethering</string>
+    <string name="enter_the_port">Please enter the port</string>
+    <string name="busy_port">This port is busy</string>
+    <string name="enter_another_port">Please enter another port</string>
+    <string name="errors">Some errors in proxy app</string>
 </resources>
